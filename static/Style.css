@@ -1,0 +1,1292 @@
+/* Ensure the HTML 'hidden' attribute works correctly across all browsers */
+[hidden] {
+    display: none !important;
+}
+
+/* ==== GLOBAL STYLES ==== */
+:root {
+    /* Define color variables for easier theming and consistency */
+    --dark-blue: #001f3f;
+    --moderate-blue: #4863A0;
+    --bright-blue: #40b4f7;
+    --light-blue-hover: #60c5ff;
+    --text-white: #ffffff;
+    --text-light-grey: #e0e0e0;
+    --text-muted-blue: #d3d3f2;
+    --input-bg: #2e2e50;
+    --input-focus-bg: #3f3f7a;
+    --error-red: #ff6b6b;
+    --success-green: #6eff6e;
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+    --shadow-strong: rgba(0, 0, 0, 0.7);
+    --border-subtle-blue: rgba(64, 180, 247, 0.3);
+    --border-light-blue: rgba(64, 180, 247, 0.2);
+    --border-lighter-blue: rgba(64, 180, 247, 0.1);
+
+    /* Font stack for better fallback */
+    font-family: 'Lexend Deca', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, var(--dark-blue), var(--moderate-blue));
+    color: var(--text-white);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+.separator {
+    border: none;
+    border-top: 2px solid var(--bright-blue);
+    margin: 40px auto;
+    width: 80%;
+    max-width: 900px;
+}
+
+/* ==== HEADER & NAVIGATION ==== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-blue);
+    padding: 15px 30px;
+    position: relative;
+    z-index: 1000;
+    box-shadow: 0 2px 10px var(--shadow-dark);
+}
+
+.navbar .logo {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--bright-blue);
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+/* Links Container */
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Default for larger screens: horizontal layout */
+    opacity: 1;
+    visibility: visible;
+    transition: none; /* No transition needed as it's always visible */
+}
+
+/* Styling for individual links */
+.nav-links li {
+    margin-left: 30px;
+}
+
+.nav-links a {
+    color: var(--bright-blue);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: var(--moderate-blue);
+    color: var(--text-white);
+}
+
+/* Active navigation link */
+.nav-links a.active {
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    font-weight: bold;
+}
+
+.nav-links a.active:hover {
+    background-color: var(--light-blue-hover);
+}
+
+/* ==== MAIN CONTENT AREAS ==== */
+main {
+    flex: 1;
+}
+
+/* ==== HERO SECTION (for index.html) ==== */
+.hero-section {
+    padding: 80px 20px;
+    text-align: center;
+    color: var(--text-white);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 30px auto;
+    max-width: 1000px;
+}
+
+.hero-logo {
+    max-width: 280px;
+    height: auto;
+    display: block;
+    margin: 0 auto 30px;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    color: var(--text-white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .tagline {
+    font-size: 1.3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    color: var(--text-light-grey);
+}
+
+/* ==== MUSIC GEN SECTION (for musicgen.html) ==== */
+.music-gen-section {
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.music-gen-section .page-title {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    color: var(--text-white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.music-gen-section .description {
+    font-size: 1.2rem;
+    color: var(--text-light-grey);
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==== COMMON INPUT BOX STYLES (used on both index and musicgen) ==== */
+.input-box {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 550px;
+    margin: 20px auto;
+    box-shadow: 0 8px 25px var(--shadow-strong);
+    border: 1px solid var(--border-subtle-blue);
+    color: var(--text-white);
+    text-align: left;
+}
+
+.input-box .input-label {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: var(--bright-blue);
+}
+
+.input-box textarea {
+    width: calc(100% - 30px); /* Account for padding */
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    resize: vertical;
+    min-height: 120px;
+    background-color: var(--input-bg);
+    color: var(--text-white);
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+
+.input-box textarea::placeholder {
+    color: #a0a0c0;
+}
+
+.input-box textarea:focus {
+    background-color: var(--input-focus-bg);
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 0 0 3px rgba(64, 180, 247, 0.5);
+}
+
+.input-box button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 30px;
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    font-weight: bold;
+    font-family: inherit; /* Inherit from body for consistency */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.2rem;
+    width: 60%;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    display: block;
+    margin: 0 auto;
+}
+
+.input-box button:hover:not(:disabled) {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-2px);
+}
+
+.input-box button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.7;
+}
+
+/* ==== SLIDER STYLES ==== */
+.slider-container {
+    margin-top: 25px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.slider-label {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--text-light-grey);
+}
+
+.slider-label #timeLengthValue {
+    font-weight: bold;
+    color: var(--bright-blue);
+    font-size: 1.3rem;
+}
+
+input[type="range"] {
+    width: 90%;
+    height: 10px;
+    background-color: var(--input-bg);
+    border-radius: 12px;
+    appearance: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--bright-blue);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: 2px solid var(--text-white);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--bright-blue);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: 2px solid var(--text-white);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background-color: var(--light-blue-hover);
+    transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background-color: var(--light-blue-hover);
+    transform: scale(1.1);
+}
+
+input[type="range"]:focus {
+    background-color: var(--input-focus-bg);
+}
+
+#timeLengthValue {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--text-white);
+    margin-top: 15px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* ==== OUTPUT BOX AND LOADING INDICATOR (for musicgen.html) ==== */
+.output-box {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 550px;
+    margin: 30px auto;
+    box-shadow: 0 4px 15px var(--shadow-dark);
+    border: 1px solid var(--border-subtle-blue);
+    text-align: center;
+    color: var(--text-white);
+}
+
+.output-box audio {
+    width: 100%;
+    max-width: 450px;
+    margin: 15px auto;
+    display: block;
+    background-color: var(--input-bg);
+    border-radius: 8px;
+    outline: none;
+}
+
+.output-box .download-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+}
+
+.output-box .download-link:hover {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-2px);
+}
+
+.output-box p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.output-box .error-message {
+    color: var(--error-red);
+    font-weight: bold;
+}
+
+.output-box .success-message {
+    color: var(--success-green);
+    font-weight: bold;
+}
+
+.loading-indicator {
+    text-align: center;
+    margin: 30px auto;
+    color: var(--bright-blue);
+    font-size: 1.2rem;
+    /* The 'display: flex;' rule that was here has been moved.
+       It will be applied by JavaScript when the 'hidden' attribute is removed,
+       or you can add it back here *without* [hidden] in your HTML if you
+       always want it to be flex when visible. */
+    flex-direction: column; /* This will only apply when not hidden */
+    align-items: center; /* This will only apply when not hidden */
+    justify-content: center; /* This will only apply when not hidden */
+}
+
+.loading-indicator p {
+    margin-top: 15px;
+}
+
+/* Spinner Animation */
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid var(--bright-blue);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==== FAQ SECTION (for index.html) ==== */
+.faq-section {
+    text-align: center;
+    padding: 5rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.faq-section h2 {
+    font-size: 2.8rem;
+    margin-bottom: 3rem;
+    color: var(--text-white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.faq-container {
+    display: grid; /* Use grid for more flexible FAQ item arrangement */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Slightly increased gap for visual separation */
+    margin-bottom: 3rem;
+}
+
+.faq-item {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow-dark);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-light-blue);
+    display: flex; /* Ensure inner content (question/answer) fills item */
+    flex-direction: column;
+}
+
+.faq-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow-strong);
+}
+
+.faq-question {
+    background-color: var(--dark-blue);
+    color: var(--bright-blue);
+    border: none;
+    width: 100%;
+    padding: 1.5rem 2rem;
+    font-size: 1.1rem;
+    text-align: left;
+    font-weight: bold;
+    font-family: inherit; /* Inherit font for consistency */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light-blue);
+}
+
+.faq-question:hover {
+    background-color: var(--input-focus-bg);
+    color: var(--text-white);
+}
+
+.faq-question::after {
+    content: '\002B'; /* Plus sign */
+    font-size: 1.5rem;
+    color: var(--bright-blue);
+    transition: transform 0.3s ease;
+    flex-shrink: 0; /* Prevent the icon from shrinking */
+    margin-left: 15px; /* Space between text and icon */
+}
+
+.faq-question[aria-expanded="true"]::after {
+    content: '\2212'; /* Minus sign */
+    transform: rotate(0deg);
+    color: var(--text-white);
+}
+
+.faq-answer {
+    padding: 0 2rem;
+    background-color: var(--dark-blue);
+    color: var(--text-muted-blue);
+    font-size: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+}
+
+.faq-answer p {
+    margin: 1rem 0;
+}
+
+.faq-question[aria-expanded="true"] + .faq-answer {
+    max-height: 200px; /* Adjust as needed based on content */
+    padding: 1rem 2rem;
+    border-top: 1px solid var(--border-lighter-blue);
+}
+
+/* ==== FOOTER ==== */
+footer {
+    font-family: inherit;
+    background-color: #1f1f3b;
+    padding: 25px;
+    text-align: center;
+    color: #b0b0b0;
+    margin-top: auto;
+    box-shadow: 0 -2px 10px var(--shadow-dark);
+}
+
+/* ==== PROFILE SECTION STYLES ==== */
+.profile-section {
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 1000px; /* Wider for history list */
+    margin: 40px auto;
+}
+
+/* Reusing .page-title for the welcome message */
+.profile-section .page-title { /* Specificity to ensure this applies */
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: var(--text-white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.music-history-box { /* Apply input-box styles, override max-width */
+    max-width: 800px; /* Adjust as needed for the list */
+    padding: 30px; /* Slightly less padding for list container */
+    text-align: left; /* Align text within the box */
+}
+
+.history-heading {
+    color: var(--bright-blue);
+    font-size: 2rem; /* Slightly smaller than page-title */
+    margin-bottom: 25px;
+    text-align: center; /* Center this heading within the box */
+}
+
+.music-history-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.music-history-item {
+    background-color: var(--input-bg); /* Darker background for each item */
+    margin-bottom: 20px; /* Space between items */
+    padding: 20px;
+    border-radius: 12px; /* Consistent rounded corners */
+    color: var(--text-white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    border: 1px solid var(--border-lighter-blue);
+    display: flex;
+    flex-direction: column; /* Stack details, audio, actions */
+    gap: 15px; /* Space between internal blocks */
+}
+
+.music-item-details {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between image and text */
+}
+
+.music-cover-image {
+    width: 90px; /* Slightly larger image */
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px; /* Consistent border radius */
+    flex-shrink: 0; /* Prevent image from shrinking */
+    border: 2px solid var(--bright-blue); /* Subtle border */
+}
+
+.music-info p {
+    margin: 5px 0;
+    font-size: 1.05rem;
+    color: var(--text-light-grey);
+}
+
+.music-info p strong {
+    color: var(--bright-blue); /* Highlight labels */
+}
+
+.music-player {
+    width: 100%;
+    margin-top: 10px; /* Adjust spacing */
+    background-color: var(--dark-blue); /* Consistent audio player background */
+    border-radius: 8px;
+    outline: none;
+}
+
+.music-actions {
+    display: flex;
+    gap: 15px; /* Space between download and edit buttons */
+    margin-top: 10px;
+    justify-content: flex-end; /* Align buttons to the right */
+}
+
+.music-actions .download-link {
+    color: var(--bright-blue);
+    text-decoration: none;
+    padding: 8px 15px;
+    border: 1px solid var(--bright-blue);
+    border-radius: 25px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: bold;
+}
+
+.music-actions .download-link:hover {
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+}
+
+.music-actions .edit-music-button {
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.music-actions .edit-music-button:hover {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-2px);
+}
+
+.no-music-message {
+    color: var(--text-light-grey);
+    font-size: 1.1rem;
+    padding: 20px;
+    text-align: center;
+}
+
+/* ==== MODAL STYLES (from inline, moved here and improved) ==== */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    /* display: flex;   Use flex to center, then hide/show with JS display property */
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Padding for small screens to prevent content touching edges */
+}
+
+.modal-content {
+    background-color: var(--input-bg); /* Use input-bg color */
+    margin: auto; /* For centering with flexbox */
+    padding: 30px; /* More padding */
+    border: 1px solid var(--border-subtle-blue);
+    width: 90%; /* Wider on small screens */
+    max-width: 500px;
+    border-radius: 15px; /* Consistent rounded corners */
+    color: var(--text-white);
+    position: relative; /* For close button positioning */
+    box-shadow: 0 10px 30px var(--shadow-strong);
+    animation: fadeInScale 0.3s ease-out; /* Simple entry animation */
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content h2 {
+    color: var(--bright-blue);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.close-button {
+    color: var(--text-light-grey);
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px; /* Larger close button */
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.close-button:hover,
+.close-button:focus {
+    color: var(--bright-blue);
+    text-decoration: none;
+    outline: none; /* Remove outline on focus for better aesthetics */
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-light-grey);
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="file"] {
+    width: calc(100% - 20px); /* Account for padding */
+    padding: 12px; /* More padding */
+    margin-bottom: 20px;
+    border: 1px solid var(--border-subtle-blue);
+    background-color: var(--dark-blue); /* Consistent input background */
+    color: var(--text-white);
+    border-radius: 8px; /* Softer corners */
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="file"]:focus {
+    outline: none;
+    border-color: var(--bright-blue);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3), 0 0 0 3px rgba(64, 180, 247, 0.4);
+}
+
+.modal-content small {
+    display: block; /* Ensure it takes its own line */
+    margin-bottom: 5px;
+}
+
+#currentImagePreview {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    text-align: center; /* Center the image preview */
+}
+
+.modal-current-image-preview { /* New class for the image in modal */
+    max-width: 120px; /* Larger preview in modal */
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--bright-blue);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.modal-submit-button { /* Specific style for modal's submit button */
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: 1.1rem;
+    display: block; /* Make it block to center */
+    margin: 20px auto 0; /* Center and add top margin */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.modal-submit-button:hover {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-2px);
+}
+
+/* ==== CHATBOT STYLES ==== */
+.chatbot-toggle-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 2.2rem; /* Larger emoji/icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    z-index: 1001; /* Above other content */
+}
+
+.chatbot-toggle-button:hover {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 450px;
+    background-color: var(--dark-blue);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1002; /* Above toggle button */
+    border: 1px solid var(--border-subtle-blue);
+    animation: fadeInScale 0.3s ease-out; /* Reuse existing animation */
+}
+
+.chatbot-header {
+    background-color: var(--moderate-blue);
+    color: var(--text-white);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light-blue);
+}
+
+.chatbot-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.close-chatbot-button {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: color 0.3s ease;
+}
+
+.close-chatbot-button:hover {
+    color: var(--error-red);
+}
+
+.chatbot-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--input-bg); /* Lighter background for messages */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between messages */
+}
+
+.user-message, .bot-message {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word; /* Ensure long words wrap */
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    border-bottom-right-radius: 5px; /* Tweak for speech bubble look */
+}
+
+.bot-message {
+    align-self: flex-start;
+    background-color: var(--moderate-blue);
+    color: var(--text-white);
+    border-bottom-left-radius: 5px; /* Tweak for speech bubble look */
+}
+
+.chatbot-input-area {
+    display: flex;
+    padding: 15px 10px;
+    background-color: var(--dark-blue);
+    border-top: 1px solid var(--border-light-blue);
+}
+
+.chatbot-input-area input[type="text"] {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--border-subtle-blue);
+    border-radius: 25px;
+    background-color: var(--input-bg);
+    color: var(--text-white);
+    font-size: 0.95rem;
+    outline: none;
+    margin-right: 10px; /* Space before button */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chatbot-input-area input[type="text"]:focus {
+    border-color: var(--bright-blue);
+    box-shadow: 0 0 0 2px rgba(64, 180, 247, 0.3);
+}
+
+.chatbot-input-area button {
+    background-color: var(--bright-blue);
+    color: var(--text-white);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chatbot-input-area button:hover {
+    background-color: var(--light-blue-hover);
+    transform: translateY(-1px);
+}
+
+/* Responsive adjustments for chatbot */
+@media (max-width: 600px) {
+    .chatbot-toggle-button {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+    }
+
+    .chatbot-container {
+        width: 90%;
+        height: 80%; /* Take more vertical space on small screens */
+        max-height: 500px; /* Cap maximum height */
+        bottom: 15px;
+        right: 5%;
+        left: 5%; /* Center it horizontally */
+    }
+
+    .chatbot-messages {
+        padding: 15px;
+    }
+
+    .user-message, .bot-message {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    .chatbot-input-area {
+        padding: 10px;
+    }
+
+    .chatbot-input-area input[type="text"],
+    .chatbot-input-area button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 20px;
+        flex-direction: row; /* Keep logo and nav links on one row */
+        justify-content: space-between;
+    }
+
+    .navbar .logo {
+        font-size: 1.8rem;
+    }
+
+    /* Hamburger menu styles removed */
+
+    .nav-links {
+        /* On small screens, keep links horizontal if no hamburger is present,
+           or adjust layout if you intend a different small-screen nav experience.
+           Since hamburger is removed, we'll keep them inline and potentially
+           wrap if too many. */
+        flex-direction: row; 
+        position: static; /* No absolute positioning needed */
+        width: auto;
+        background-color: transparent; /* No background needed */
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+        max-height: none; /* Always visible */
+        overflow: visible;
+        opacity: 1;
+        visibility: visible;
+        display: flex; /* Ensure display flex */
+        flex-wrap: wrap; /* Allow links to wrap to the next line */
+        justify-content: flex-end; /* Align links to the right */
+        margin-left: auto; /* Push links to the right */
+    }
+
+    .nav-links li {
+        margin: 0 10px; /* Smaller margin between links */
+        text-align: center;
+    }
+
+    .nav-links a {
+        padding: 8px 10px; /* Adjust padding for smaller screens */
+        display: inline-block; /* Allow horizontal flow */
+        border-bottom: none; /* No border for horizontal links */
+        border-radius: 5px; /* Keep rounded corners */
+    }
+
+    .hero-section {
+        padding: 60px 15px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-section .tagline {
+        font-size: 1rem;
+    }
+
+    .input-box {
+        padding: 30px;
+        margin: 30px auto;
+    }
+
+    .input-box button {
+        width: 80%;
+    }
+
+    .faq-section {
+        padding: 3rem 1rem;
+    }
+
+    .faq-section h2 {
+        font-size: 2.2rem;
+    }
+
+    .faq-container {
+        grid-template-columns: 1fr; /* Stack FAQ items on small screens */
+        gap: 15px;
+    }
+
+    .faq-item {
+        width: 100%;
+    }
+
+    .faq-question {
+        font-size: 1rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem;
+    }
+
+    .faq-question[aria-expanded="true"] + .faq-answer {
+        padding: 1rem 1.5rem;
+    }
+
+    /* Music Gen Specific Media Queries */
+    .music-gen-section {
+        padding: 40px 15px;
+    }
+
+    .music-gen-section .page-title {
+        font-size: 2.2rem;
+    }
+
+    .music-gen-section .description {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    .input-box .input-label {
+        font-size: 1rem;
+    }
+
+    .input-box textarea {
+        font-size: 0.95rem;
+        min-height: 100px;
+        width: calc(100% - 20px);
+        padding: 10px;
+    }
+
+    .input-box button {
+        font-size: 1.1rem;
+    }
+
+    .output-box {
+        padding: 20px;
+    }
+
+    .output-box audio {
+        width: 95%;
+    }
+
+    .output-box .download-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    .loading-indicator {
+        font-size: 1rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Profile Page Specific Media Queries */
+    .profile-section {
+        padding: 40px 15px;
+        margin: 20px auto;
+    }
+
+    .profile-section .page-title {
+        font-size: 2.2rem;
+    }
+
+    .music-history-box {
+        padding: 20px;
+        max-width: 100%; /* Allow it to take full width on small screens */
+    }
+
+    .history-heading {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .music-history-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .music-history-item {
+        padding: 15px;
+        flex-direction: column; /* Stack details vertically */
+        align-items: flex-start; /* Align contents to the start */
+        gap: 10px;
+    }
+
+    .music-item-details {
+        flex-direction: column; /* Stack image and text vertically */
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .music-info {
+        width: 100%; /* Ensure info block takes full width */
+    }
+
+    .music-info p {
+        font-size: 0.95rem;
+        margin: 3px 0;
+    }
+
+    .music-cover-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    .music-player {
+        margin-top: 15px;
+    }
+
+    .music-actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px;
+        align-items: center; /* Center stacked buttons */
+        width: 100%;
+    }
+
+    .music-actions .download-link,
+    .music-actions .edit-music-button {
+        width: 80%; /* Make buttons wider */
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+        width: 95%; /* Even wider modal on very small screens */
+    }
+
+    .modal-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="file"] {
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    .modal-current-image-preview {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    .modal-submit-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        width: 70%;
+    }
+}
+
+/* Larger screens for FAQ items, adjust as needed */
+@media (min-width: 900px) {
+    .faq-container {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for larger desktops */
+        gap: 25px;
+    }
+}
+
+/* ==== ABOUT SECTION ==== */
+.about-section {
+    padding: 60px 20px; /* Consistent vertical padding */
+    text-align: center;
+    background-color: transparent; /* Background gradient is on the body */
+    /* Remove border-bottom as it's handled by .separator between sections */
+    /* If you want a specific background for this section, you could use: */
+    /* background-color: rgba(0, 0, 0, 0.2); */
+    /* Or a subtle gradient if desired, e.g., linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0.3)); */
+}
+
+/* Reusing .page-title for consistency across all sections */
+.about-section .page-title { /* Specificity to ensure this applies */
+    font-size: 2.8rem; /* Consistent with music-gen-section title */
+    margin-bottom: 20px;
+    color: var(--text-white); /* White text for dark background */
+    text-shadow: 0 2px 4px var(--shadow-dark); /* Add shadow for depth */
+    position: relative; /* For pseudo-element underline */
+    display: inline-block; /* Allows width for pseudo-element */
+}
+
+.about-section .page-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -10px; /* Position below text */
+    transform: translateX(-50%);
+    width: 60px; /* Short underline */
+    height: 4px;
+    background-color: var(--bright-blue); /* Consistent bright blue underline */
+    border-radius: 2px;
+}
+
+.about-section .about-description {
+    font-family: var(--font-stack); /* Use the global font stack */
+    font-size: 1.2rem; /* Consistent with other descriptions */
+    color: var(--text-light-grey); /* Light grey for body text */
+    max-width: 800px; /* Constrain width for readability */
+    margin: 0 auto; /* Center the paragraph */
+    line-height: 1.7; /* Improve line spacing */
+}
+
+/* Responsive adjustments for the about section */
+@media (max-width: 768px) {
+    .about-section .page-title {
+        font-size: 2.2rem; /* Smaller on mobile */
+    }
+    .about-section .about-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section .page-title {
+        font-size: 2rem;
+    }
+    .about-section {
+        padding: 40px 15px;
+    }
+}
