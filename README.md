@@ -88,7 +88,9 @@ This project was developed as a **3rd‑year school project** by a team of four,
 
 ---
 
-## 📁 Project Structure
+📁 **Project Structure**
+
+```text
 musipal/
 ├── app.py                 # Main Flask application
 ├── config.py              # Environment configuration (OAuth, secrets)
@@ -108,7 +110,7 @@ musipal/
 │   ├── about.html
 │   └── base.html
 └── README.md
-
+```
 
 ---
 
