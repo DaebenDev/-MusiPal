@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiPal - About Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" class="logo">MusiPal</a>
+
+            
+
+            <ul class="nav-links" id="main-navigation">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('musicgen') }}">Music Gen</a></li>
+                <li><a href="{{ url_for('about') }}" class="active">About</a></li> <li><a href="{{ url_for('profile') }}">Profile</a></li> </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="about-section">
+            <h1 class="page-title">About MusiPal</h1>
+            <p class="about-description">MusiPal is developed by a passionate team dedicated to making music creation easy and accessible for everyone, especially aspiring musicians and hobbyists. Our goal is to provide a user-friendly platform where creativity knows no bounds.</p>
+
+            <hr class="separator">
+
+            <h2 class="team-heading">Meet Our Passionate Team</h2>
+            <div class="team-grid faq-container"> <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="team-answer-johnrick">Johnrick</button>
+                    <div class="faq-answer" id="team-answer-johnrick" hidden>
+                        <p><strong>Role:</strong> Main Developer / Tech Lead</p>
+                        <p><strong>Responsibilities:</strong> Frontend & backend development, integrating music generation tools/libraries, and ensuring everything runs smoothly.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="team-answer-ken">Ken</button>
+                    <div class="faq-answer" id="team-answer-ken" hidden>
+                        <p><strong>Role:</strong> UI/UX Designer</p>
+                        <p><strong>Responsibilities:</strong> Designing how the site looks and feels, creating wireframes, mockups, and responsive layouts, and ensuring the interface is intuitive and easy to use, especially for music interaction.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="team-answer-miiko">Miiko</button>
+                    <div class="faq-answer" id="team-answer-miiko" hidden>
+                        <p><strong>Role:</strong> Project Manager / QA Tester</p>
+                        <p><strong>Responsibilities:</strong> Tracking progress and tasks, scheduling team meetings, testing features, reporting bugs, and ensuring product quality.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="team-answer-ralph">Ralph</button>
+                    <div class="faq-answer" id="team-answer-ralph" hidden>
+                        <p><strong>Role:</strong> Documentation Lead</p>
+                        <p><strong>Responsibilities:</strong> Writing technical and user documentation, including how the system works (for developers) and user guides/tutorials (for users), and tracking version changes and setup steps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 MusiPal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Burger Menu Functionality (consistent across pages)
+            const burgerMenu = document.querySelector('.burger-menu');
+            const navLinks = document.querySelector('.nav-links');
+
+            if (burgerMenu && navLinks) {
+                burgerMenu.addEventListener('click', function() {
+                    const isExpanded = burgerMenu.getAttribute('aria-expanded') === 'true';
+                    burgerMenu.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function(event) {
+                    if (!navLinks.contains(event.target) && !burgerMenu.contains(event.target) && navLinks.classList.contains('show')) {
+                        burgerMenu.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('show');
+                    }
+                });
+            } else {
+                console.error("Burger menu or navigation links not found. Check your HTML structure.");
+            }
+
+            // Team Accordion Functionality (reusing FAQ logic)
+            const teamQuestions = document.querySelectorAll('.faq-question'); // Reusing the class name for consistency
+
+            teamQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+                    // Close all other open answers
+                    document.querySelectorAll('.faq-question[aria-expanded="true"]').forEach(openQuestion => {
+                        if (openQuestion !== this) {
+                            openQuestion.setAttribute('aria-expanded', 'false');
+                            document.getElementById(openQuestion.getAttribute('aria-controls')).setAttribute('hidden', '');
+                        }
+                    });
+
+                    // Toggle the clicked answer
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    if (isExpanded) {
+                        answer.setAttribute('hidden', '');
+                    } else {
+                        answer.removeAttribute('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

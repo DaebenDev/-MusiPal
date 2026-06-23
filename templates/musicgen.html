@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiPal - Generate Your Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" class="logo">MusiPal</a>
+
+            <ul class="nav-links" id="main-navigation">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('musicgen') }}" class="active">Music Gen</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="music-gen-section">
+            <h1 class="page-title">Generate Your Music</h1>
+            <p class="description">Describe the music you envision, choose its length, and let MusiPal bring your ideas to life!</p>
+
+            <div class="input-box">
+                <label for="prompt" class="input-label">What kind of music do you want to create?</label>
+                <textarea id="prompt" rows="5" placeholder="e.g., 'A calm piano melody', 'Upbeat electronic beat for a party', 'Mysterious orchestral piece with strings and brass'"></textarea>
+
+                <div class="slider-container">
+                    <label for="timeLength" class="slider-label">Music Length: <span id="timeLengthValue">30</span> seconds</label>
+                    <input type="range" id="timeLength" name="timeLength" min="5" max="60" value="30">
+                </div>
+
+                <button id="generateButton">Generate Music</button>
+            </div>
+
+            <div id="loadingIndicator" class="loading-indicator" hidden>
+                <div class="spinner"></div>
+                <p>Generating music, this might take a moment...</p>
+            </div>
+
+            <div id="generatedMusicOutput" class="output-box" hidden>
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 MusiPal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- Burger menu JavaScript (consistent with index.html) ---
+            // Note: Your HTML structure doesn't have a specific burger menu button (like a div with class 'burger-menu').
+            // If you intend to have one, make sure its HTML exists and this JS is correctly linked to it.
+            // For now, I'm commenting it out or assuming you have a `burger-menu` class for a responsive nav trigger.
+            const burgerMenu = document.querySelector('.burger-menu'); // Assumes a burger menu element exists
+            const navLinks = document.querySelector('.nav-links');
+
+            if (burgerMenu && navLinks) {
+                burgerMenu.addEventListener('click', function() {
+                    const isExpanded = burgerMenu.getAttribute('aria-expanded') === 'true';
+                    burgerMenu.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function(event) {
+                    if (!navLinks.contains(event.target) && !burgerMenu.contains(event.target) && navLinks.classList.contains('show')) {
+                        burgerMenu.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('show');
+                    }
+                });
+            } else {
+                 // console.warn("Burger menu elements not found in the DOM. Responsive navigation might not work as expected.");
+            }
+
+            // --- Music Gen Page JavaScript ---
+            const promptInput = document.getElementById('prompt');
+            const timeLengthSlider = document.getElementById('timeLength');
+            const timeLengthValueDisplay = document.getElementById('timeLengthValue');
+            const generateButton = document.getElementById('generateButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const generatedMusicOutput = document.getElementById('generatedMusicOutput');
+
+            // Initialize slider display value on page load
+            timeLengthValueDisplay.textContent = timeLengthSlider.value;
+
+            // Update slider value display when slider is moved
+            timeLengthSlider.addEventListener('input', () => {
+                timeLengthValueDisplay.textContent = timeLengthSlider.value;
+            });
+
+            // Handle music generation on button click
+            generateButton.addEventListener('click', async () => {
+                const prompt = promptInput.value.trim();
+                const timeLength = timeLengthSlider.value;
+
+                if (!prompt) {
+                    // Show error message directly in the output area
+                    generatedMusicOutput.innerHTML = `<p class="error-message">Please enter a description for your music.</p>`;
+                    generatedMusicOutput.removeAttribute('hidden');
+                    return; // Stop execution if prompt is empty
+                }
+
+                // 1. Hide previous output and show loading indicator
+                generatedMusicOutput.hidden = true; // Hide previous output
+                generatedMusicOutput.innerHTML = ''; // Clear previous content
+                loadingIndicator.hidden = false; // Show loading spinner
+                
+                // 2. Disable inputs and button to prevent re-submission
+                generateButton.disabled = true;
+                promptInput.disabled = true;
+                timeLengthSlider.disabled = true;
+
+                try {
+                    // 3. Make the API call to your Flask backend
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt, timeLength }),
+                    });
+
+                    // 4. Handle non-OK responses (e.g., 401, 500 from Flask)
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                    }
+
+                    // 5. Parse the JSON response
+                    const result = await response.json();
+
+                    // 6. Hide loading and show output box
+                    loadingIndicator.hidden = true; 
+                    generatedMusicOutput.hidden = false;
+
+                    // 7. Display generated music or error
+                    if (result.audio) {
+                        generatedMusicOutput.innerHTML = `
+                            <p class="success-message">Your music has been generated!</p>
+                            <audio controls src="data:audio/wav;base64,${result.audio}"></audio>
+                            <a href="/static/${result.audioPath}" download class="download-link">Download Music</a>
+                        `;
+                    } else {
+                        generatedMusicOutput.innerHTML = `<p class="error-message">Failed to generate music: No audio received from server.</p>`;
+                    }
+
+                } catch (error) {
+                    // 8. Handle any errors during the fetch or response processing
+                    console.error("Error generating music:", error);
+                    loadingIndicator.hidden = true; // Hide loading
+                    generatedMusicOutput.hidden = false; // Show output box
+                    generatedMusicOutput.innerHTML = `<p class="error-message">An error occurred: ${error.message}. Please try again.</p>`;
+                } finally {
+                    // 9. Re-enable inputs and button regardless of success or failure
+                    generateButton.disabled = false;
+                    promptInput.disabled = false;
+                    timeLengthSlider.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

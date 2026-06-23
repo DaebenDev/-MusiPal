@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MusiPal - Login/Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Variables for easier theme management */
+        :root {
+            --primary-dark-blue: #001f3f;
+            --secondary-blue: #4863A0;
+            --form-dark-bg: #2F539B;
+            --form-light-bg: #EAF0F6; /* Lighter, softer white for login */
+            --input-bg: #FFFFFF; /* Pure white for inputs */
+            --input-border-focus: #151B8D;
+            --button-bg: #151B8D;
+            --button-hover-bg: #101575;
+            --text-light: #fff;
+            --text-dark: #333;
+            --error-red: #E74C3C; /* Brighter, clearer red */
+            --border-radius-main: 25px; /* More pronounced rounding */
+            --box-shadow-dark: 0 25px 70px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            --box-shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* General Body Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif; /* Modern, clean font */
+            background: linear-gradient(to bottom, var(--primary-dark-blue), var(--secondary-blue));
+            color: var(--text-light);
+            overflow: hidden; /* Prevent scrollbar from bouncing */
+            -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Main Container for Forms and Logo */
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 120px; /* Increased gap for more breathing room */
+            width: 90%;
+            max-width: 1300px; /* Even wider container */
+            padding: 30px; /* More padding */
+        }
+
+        /* Main Form Wrapper (Signup/Login) */
+        .main {
+            width: 420px; /* Slightly wider forms */
+            min-height: 600px; /* Increased height */
+            background: var(--form-dark-bg);
+            overflow: hidden;
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--box-shadow-dark);
+            position: relative;
+            flex-shrink: 0;
+            display: flex; /* Ensure it behaves as a flex container */
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+        }
+
+        #chk {
+            display: none;
+        }
+
+        /* Signup Form Styles */
+        .signup, .login {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.8s ease-in-out; /* Bouncier transition */
+            padding: 30px; /* More internal padding */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center form elements horizontally */
+            justify-content: center; /* Align content to center for better visual balance */
+        }
+
+        .signup {
+            background: var(--form-dark-bg);
+            z-index: 2;
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .login {
+            background: var(--form-light-bg);
+            color: var(--text-dark);
+            border-radius: 60% / 10%; /* Keep the wave effect */
+            transform: translateY(100%);
+            z-index: 1;
+            justify-content: center; /* Center content for login as well */
+            padding-top: 30px; /* Match signup padding */
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: var(--box-shadow-light); /* Softer shadow for light form */
+        }
+
+        /* Label for Signup/Login Tabs */
+        label {
+            color: var(--text-light); /* Default for signup label */
+            font-size: 3em; /* Larger, more impactful */
+            font-family: 'Inter', sans-serif; /* Using Inter for headings now */
+            font-weight: 700;
+            text-align: center;
+            margin: 40px 0 40px 0; /* More balanced margins */
+            cursor: pointer;
+            transition: 0.5s ease-in-out;
+            user-select: none;
+            z-index: 3;
+            position: relative;
+        }
+
+        .login label {
+            color: var(--button-bg); /* Primary blue for login label */
+            transform: scale(0.7); /* Smaller when signup is active */
+            /* margin-top: 20px; Removed to simplify and let flex centering handle it */
+        }
+
+        /* Input Field Styles */
+        input {
+            width: calc(100% - 60px);
+            background: var(--input-bg);
+            margin: 12px 0; /* Adjusted margin to prevent auto and ensure consistent spacing */
+            padding: 16px 20px;
+            border: 1px solid #ddd;
+            outline: none;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 1.05em;
+            color: var(--text-dark);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Input field focus style */
+        input:focus {
+            border-color: var(--input-border-focus);
+            box-shadow: 0 0 0 3px rgba(21, 27, 141, 0.2), inset 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        /* Password input wrapper for show/hide toggle */
+        .password-input-wrapper {
+            position: relative;
+            width: calc(100% - 60px);
+            margin: 12px 0; /* Adjusted margin for consistency */
+        }
+
+        .password-input-wrapper input {
+            width: 100%;
+            margin: 0; /* Override parent margin for the input inside wrapper */
+            padding-right: 55px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1em;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--button-bg);
+        }
+
+        /* Button Styles */
+        button {
+            width: calc(100% - 60px);
+            height: 60px;
+            margin: 35px 0 20px 0; /* Adjusted margin for consistency */
+            display: block;
+            color: var(--text-light);
+            background: var(--button-bg);
+            font-size: 1.3em;
+            font-weight: 600;
+            outline: none;
+            border: none;
+            border-radius: 12px;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+            letter-spacing: 0.8px;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 25px rgba(21, 27, 141, 0.4);
+        }
+
+        button:hover {
+            background: var(--button-hover-bg);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(21, 27, 141, 0.5);
+        }
+
+        /* Checkbox state for form toggle */
+        #chk:checked ~ .login {
+            transform: translateY(0);
+            opacity: 1;
+            z-index: 2;
+            pointer-events: auto;
+        }
+
+        #chk:checked ~ .login label {
+            transform: scale(1);
+            margin-top: 40px;
+        }
+
+        #chk:checked ~ .signup {
+            transform: translateY(-100%);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #chk:checked ~ .signup label {
+            transform: scale(0.7);
+            margin-top: 20px;
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95em;
+            width: 100%; /* Ensure it takes full width for centering */
+        }
+
+        .forgot-password a {
+            color: var(--button-bg);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: var(--button-hover-bg);
+            text-decoration: underline;
+        }
+
+        /* Logo Box Styles */
+        .logo-box {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .logo-img {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Dynamic Prompt Text */
+        .prompt-text {
+            position: absolute;
+            /* Adjust top/bottom as needed for centering within the main element */
+            top: 20px; /* Position it closer to the top of the form */
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-light);
+            font-size: 1.15em;
+            text-align: center;
+            width: 80%;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out;
+            font-weight: 500;
+            line-height: 1.4;
+            /* Ensure prompt text stays on top of labels */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Prompt text color change when login is active */
+        #chk:checked ~ .prompt-text {
+            color: var(--text-dark);
+        }
+
+        /* Validation feedback styles */
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.88em;
+            margin: -8px 0 12px 0; /* Adjusted margin to ensure proper alignment with inputs */
+            width: calc(100% - 60px);
+            text-align: left;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease, color 0.3s ease;
+        }
+
+        .error-message.visible {
+            opacity: 1;
+            max-height: 50px;
+        }
+
+        input.invalid {
+            border: 2px solid var(--error-red);
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 1024px) {
+            .container {
+                gap: 80px;
+                flex-direction: column;
+            }
+            .main {
+                width: 90%;
+                max-width: 450px;
+                min-height: 550px;
+            }
+            .logo-box {
+                width: 70%;
+                max-width: 350px;
+                order: -1;
+            }
+            .prompt-text {
+                top: 15px; /* Adjust for smaller height on tablets */
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px; /* Add some padding around the container on small screens */
+            }
+            .container {
+                padding: 0; /* Remove container padding as body handles it */
+                gap: 40px;
+                flex-direction: column;
+            }
+            .main {
+                width: 95%;
+                min-height: 500px;
+                border-radius: 15px;
+            }
+            .signup, .login {
+                padding: 20px;
+            }
+            label {
+                font-size: 2.5em;
+                margin: 30px 0;
+            }
+            input {
+                width: calc(100% - 40px); /* Adjust for smaller padding */
+                padding: 14px 18px;
+                font-size: 0.95em;
+            }
+            .password-input-wrapper {
+                width: calc(100% - 40px); /* Adjust for smaller padding */
+            }
+            .password-input-wrapper input {
+                padding-right: 45px;
+            }
+            .toggle-password {
+                right: 12px;
+                font-size: 0.9em;
+            }
+            button {
+                width: calc(100% - 40px); /* Adjust for smaller padding */
+                height: 50px;
+                font-size: 1.1em;
+                margin-top: 25px;
+                border-radius: 10px;
+            }
+            .prompt-text {
+                font-size: 1em;
+                top: 10px; /* Further adjust for mobile */
+                width: 90%;
+            }
+            .error-message {
+                font-size: 0.82em;
+                width: calc(100% - 40px); /* Adjust for smaller padding */
+            }
+            .logo-img {
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="main">
+            <input type="checkbox" id="chk" aria-hidden="true" checked />
+
+            <p class="prompt-text" id="dynamicPrompt"></p>
+
+            <div class="signup">
+                <form id="signupForm" action="{{ url_for('signup') }}" method="POST">
+                    <label for="chk" aria-hidden="true">Sign up</label>
+                    <input type="text" name="username" placeholder="User name" required aria-label="Username"/>
+                    <span class="error-message" id="usernameError"></span>
+
+                    <input type="email" name="email" placeholder="Email" required aria-label="Email"/>
+                    <span class="error-message" id="signupEmailError"></span>
+
+                    <div class="password-input-wrapper">
+                        <input type="password" name="password" id="signupPassword" placeholder="Password" required aria-label="Password"/>
+                        <span class="toggle-password" data-target="signupPassword"><i class="fas fa-eye"></i></span>
+                    </div>
+                    <span class="error-message" id="signupPasswordError"></span>
+
+                    <button type="submit">Sign up</button>
+                </form>
+            </div>
+
+            <div class="login">
+                <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+                    <label for="chk" aria-hidden="true">Login</label>
+                    <input type="email" name="email" placeholder="Email" required aria-label="Email"/>
+                    <span class="error-message" id="loginEmailError"></span>
+
+                    <div class="password-input-wrapper">
+                        <input type="password" name="password" id="loginPassword" placeholder="Password" required aria-label="Password"/>
+                        <span class="toggle-password" data-target="loginPassword"><i class="fas fa-eye"></i></span>
+                    </div>
+                    <span class="error-message" id="loginPasswordError"></span>
+
+                    <button type="submit">Login</button>
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="logo-box">
+            <img src="{{ url_for('static', filename='images/Musipal.png') }}" alt="MusiPal Logo" class="logo-img" />
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chk = document.getElementById('chk');
+            const dynamicPrompt = document.getElementById('dynamicPrompt');
+            const signupForm = document.getElementById('signupForm');
+            const loginForm = document.getElementById('loginForm');
+
+            // --- Dynamic Prompt Logic ---
+            const updatePrompt = () => {
+                dynamicPrompt.textContent = chk.checked ? "Welcome back! Login to your account." : "Welcome! Create your account.";
+                dynamicPrompt.style.color = chk.checked ? 'var(--text-dark)' : 'var(--text-light)';
+            };
+
+            updatePrompt(); // Set initial prompt
+            chk.addEventListener('change', updatePrompt);
+
+            // --- Toggle Password Visibility (using Font Awesome icons) ---
+            document.querySelectorAll('.toggle-password').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const targetId = toggle.dataset.target;
+                    const passwordInput = document.getElementById(targetId);
+                    const icon = toggle.querySelector('i');
+
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+
+            // --- Basic Client-Side Validation ---
+            const isValidEmail = (email) => {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            };
+
+            const showError = (inputElement, errorElement, message) => {
+                inputElement.classList.add('invalid');
+                errorElement.textContent = message;
+                errorElement.classList.add('visible');
+            };
+
+            const hideError = (inputElement, errorElement) => {
+                inputElement.classList.remove('invalid');
+                errorElement.textContent = '';
+                errorElement.classList.remove('visible');
+            };
+
+            // Signup Form Validation
+            signupForm.addEventListener('submit', function(event) {
+                let valid = true;
+
+                // Username validation
+                const usernameInput = this.elements['username'];
+                const usernameError = document.getElementById('usernameError');
+                if (usernameInput.value.trim() === '') {
+                    showError(usernameInput, usernameError, 'Username cannot be empty.');
+                    valid = false;
+                } else {
+                    hideError(usernameInput, usernameError);
+                }
+
+                // Email validation
+                const signupEmailInput = this.elements['email'];
+                const signupEmailError = document.getElementById('signupEmailError');
+                if (signupEmailInput.value.trim() === '' || !isValidEmail(signupEmailInput.value)) {
+                    showError(signupEmailInput, signupEmailError, 'Please enter a valid email address.');
+                    valid = false;
+                } else {
+                    hideError(signupEmailInput, signupEmailError);
+                }
+
+                // Password validation
+                const signupPasswordInput = this.elements['password'];
+                const signupPasswordError = document.getElementById('signupPasswordError');
+                if (signupPasswordInput.value.length < 6) {
+                    showError(signupPasswordInput, signupPasswordError, 'Password must be at least 6 characters long.');
+                    valid = false;
+                } else {
+                    hideError(signupPasswordInput, signupPasswordError);
+                }
+
+                if (!valid) {
+                    event.preventDefault(); // Stop form submission if validation fails
+                }
+            });
+
+            // Login Form Validation
+            loginForm.addEventListener('submit', function(event) {
+                let valid = true;
+
+                // Email validation
+                const loginEmailInput = this.elements['email'];
+                const loginEmailError = document.getElementById('loginEmailError');
+                if (loginEmailInput.value.trim() === '' || !isValidEmail(loginEmailInput.value)) {
+                    showError(loginEmailInput, loginEmailError, 'Please enter a valid email address.');
+                    valid = false;
+                } else {
+                    hideError(loginEmailInput, loginEmailError);
+                }
+
+                // Password validation
+                const loginPasswordInput = this.elements['password'];
+                const loginPasswordError = document.getElementById('loginPasswordError');
+                if (loginPasswordInput.value.trim() === '') {
+                    showError(loginPasswordInput, loginPasswordError, 'Password cannot be empty.');
+                    valid = false;
+                } else {
+                    hideError(loginPasswordInput, loginPasswordError);
+                }
+
+                if (!valid) {
+                    event.preventDefault(); // Stop form submission if validation fails
+                }
+            });
+        });
+    </script>
+</body>
+</html>

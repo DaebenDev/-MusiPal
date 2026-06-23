@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ username }}'s Profile - MusiPal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" class="logo">MusiPal</a>
+
+            
+
+            <ul class="nav-links" id="main-navigation">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('musicgen') }}">Music Gen</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('profile') }}" class="active">Profile</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li> </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="profile-section">
+            <h1 class="page-title">Welcome, {{ username }}!</h1>
+
+            <hr class="separator">
+
+            <div class="input-box music-history-box"> <h2 class="history-heading">Your Music History</h2>
+                {% if music_history %}
+                    <ul class="music-history-list">
+                        {% for item in music_history %}
+                            <li class="music-history-item">
+                                <div class="music-item-details">
+                                    {% if item[5] %}
+                                        <img src="{{ url_for('static', filename=item[5]) }}" alt="Cover Image for {{ item[3] }}" class="music-cover-image">
+                                    {% endif %}
+                                    <div class="music-info">
+                                        <p><strong>Music Name:</strong> <span id="music-name-{{ item[6] }}">{{ item[3] if item[3] else 'N/A' }}</span></p>
+                                        <p><strong>Artist:</strong> <span id="artist-{{ item[6] }}">{{ item[4] if item[4] else 'N/A' }}</span></p>
+                                        <p><strong>Prompt:</strong> {{ item[0] }}</p>
+                                        <p><strong>Date Generated:</strong> {{ item[2] }}</p>
+                                    </div>
+                                </div>
+                                <audio controls class="music-player">
+                                    <source src="{{ url_for('static', filename=item[1]) }}" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div class="music-actions">
+                                    <a href="{{ url_for('static', filename=item[1]) }}" download class="download-link">Download</a>
+                                    <button class="edit-music-button"
+                                            data-music-id="{{ item[6] }}"
+                                            data-music-name="{{ item[3] }}"
+                                            data-artist="{{ item[4] }}"
+                                            data-current-image="{{ item[5] if item[5] else '' }}">Edit</button>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-music-message">No music generated yet. Generate some music to view it here!</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 MusiPal. All rights reserved.</p>
+    </footer>
+
+    <div id="editMusicModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <span class="close-button" aria-label="Close modal">&times;</span>
+            <h2 id="modalTitle">Edit Music Details</h2>
+            <form id="editMusicForm" enctype="multipart/form-data">
+                <input type="hidden" id="editMusicId" name="music_id">
+
+                <label for="editMusicName">Music Name:</label>
+                <input type="text" id="editMusicName" name="music_name" placeholder="Enter music name">
+
+                <label for="editArtist">Artist:</label>
+                <input type="text" id="editArtist" name="artist" placeholder="Enter artist name">
+
+                <label for="editCoverImage">Cover Image:</label>
+                <input type="file" id="editCoverImage" name="cover_image" accept="image/*">
+                <small style="color: var(--text-light-grey);">Current Image:</small> <span id="currentImageName" style="color: var(--bright-blue);">None</span>
+                <div id="currentImagePreview"></div>
+
+                <button type="submit" class="modal-submit-button">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Burger menu functionality (consistent across pages)
+            const burgerMenu = document.querySelector('.burger-menu');
+            const navLinks = document.querySelector('.nav-links'); // Corrected class name
+
+            if (burgerMenu && navLinks) {
+                burgerMenu.addEventListener('click', function() {
+                    const isExpanded = burgerMenu.getAttribute('aria-expanded') === 'true';
+                    burgerMenu.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('show');
+                });
+
+                // Close menu if clicked outside
+                document.addEventListener('click', function(event) {
+                    if (!navLinks.contains(event.target) && !burgerMenu.contains(event.target) && navLinks.classList.contains('show')) {
+                        burgerMenu.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('show');
+                    }
+                });
+            } else {
+                console.error("Burger menu or navigation links not found. Check your HTML structure.");
+            }
+
+            // --- Modal and Music History Functionality ---
+            const modal = document.getElementById('editMusicModal');
+            const closeButton = document.querySelector('.close-button');
+            const editButtons = document.querySelectorAll('.edit-music-button');
+            const editMusicIdInput = document.getElementById('editMusicId');
+            const editMusicNameInput = document.getElementById('editMusicName');
+            const editArtistInput = document.getElementById('editArtist');
+            const editCoverImageInput = document.getElementById('editCoverImage');
+            const currentImageNameSpan = document.getElementById('currentImageName');
+            const currentImagePreviewDiv = document.getElementById('currentImagePreview');
+            const editMusicForm = document.getElementById('editMusicForm');
+
+            // Open Modal Logic
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const musicId = this.dataset.musicId;
+                    const musicName = this.dataset.musicName;
+                    const artist = this.dataset.artist;
+                    const currentImage = this.dataset.currentImage; // This will be the path 'images/covers/...' or empty string
+
+                    editMusicIdInput.value = musicId;
+                    editMusicNameInput.value = (musicName && musicName !== 'N/A') ? musicName : '';
+                    editArtistInput.value = (artist && artist !== 'N/A') ? artist : '';
+
+                    currentImageNameSpan.textContent = currentImage ? currentImage.split('/').pop() : 'None';
+                    currentImagePreviewDiv.innerHTML = ''; // Clear previous image
+                    if (currentImage) {
+                        const img = document.createElement('img');
+                        // Ensure Flask static path is correctly prepended
+                        img.src = "{{ url_for('static', filename='') }}" + currentImage;
+                        img.alt = "Current cover image";
+                        // Using classes for styling instead of inline styles for consistency
+                        img.classList.add('modal-current-image-preview');
+                        currentImagePreviewDiv.appendChild(img);
+                    }
+
+                    modal.style.display = 'flex'; // Use flex to center modal
+                    modal.setAttribute('aria-hidden', 'false'); // For accessibility
+                    modal.focus(); // Set focus to the modal for keyboard users
+                });
+            });
+
+            // Close Modal Logic
+            function closeEditModal() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                editMusicForm.reset(); // Clear the form
+                currentImagePreviewDiv.innerHTML = ''; // Clear image preview
+            }
+
+            closeButton.addEventListener('click', closeEditModal);
+
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeEditModal();
+                }
+            });
+
+            // Handle keyboard accessibility (Escape key)
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && modal.style.display === 'flex') {
+                    closeEditModal();
+                }
+            });
+
+            // Form Submission Logic
+            editMusicForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch('/edit_music_metadata', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Music metadata updated successfully!');
+                        closeEditModal();
+                        // Optimistically update the UI without full page reload
+                        // Find the corresponding list item and update its text content
+                        const musicId = formData.get('music_id');
+                        const updatedName = formData.get('music_name');
+                        const updatedArtist = formData.get('artist');
+                        const updatedCoverPath = data.new_image_path; // Assume backend sends this back
+
+                        const musicNameSpan = document.getElementById(`music-name-${musicId}`);
+                        const artistSpan = document.getElementById(`artist-${musicId}`);
+                        const musicItemDetailsDiv = musicNameSpan.closest('.music-item-details');
+
+                        if (musicNameSpan) musicNameSpan.textContent = updatedName || 'N/A';
+                        if (artistSpan) artistSpan.textContent = updatedArtist || 'N/A';
+
+                        // Update image if a new one was uploaded or current one was removed
+                        if (musicItemDetailsDiv) {
+                            let imgElement = musicItemDetailsDiv.querySelector('.music-cover-image');
+                            if (updatedCoverPath) {
+                                if (!imgElement) {
+                                    imgElement = document.createElement('img');
+                                    imgElement.classList.add('music-cover-image');
+                                    // Insert at the beginning of music-item-details
+                                    musicItemDetailsDiv.insertBefore(imgElement, musicItemDetailsDiv.firstChild);
+                                }
+                                imgElement.src = "{{ url_for('static', filename='') }}" + updatedCoverPath;
+                                imgElement.alt = `Cover Image for ${updatedName || 'N/A'}`;
+                            } else if (imgElement) {
+                                // If no new path, and there was an old image, remove it
+                                imgElement.remove();
+                            }
+                        }
+
+                    } else {
+                        alert('Error updating music metadata: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating music metadata.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

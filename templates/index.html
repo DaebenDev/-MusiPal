@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusiPal - Your Music Creation Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" class="logo">MusiPal</a>
+
+            <ul class="nav-links" id="main-navigation">
+                <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('musicgen') }}">Music Gen</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <img src="{{ url_for('static', filename='images/Musipal.png') }}" alt="MusiPal Logo - Create Music Easily" class="hero-logo">
+            <h1>Unlock Your Musical Journey with MusiPal!</h1>
+            <p class="tagline">MusiPal helps aspiring musicians generate unique music with a click. Get inspired, sample royalty-free tracks, and start your creative journey today!</p>
+        </section>
+
+        <hr class="separator">
+
+        <section class="faq-section" aria-labelledby="faq-heading">
+            <h2 id="faq-heading">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1">What is MusiPal?</button>
+                    <div class="faq-answer" id="faq-answer-1" hidden>
+                        <p>MusiPal is a web-based application designed to help aspiring musicians generate music using simple descriptions. It serves as a starter tool for those beginning their musical journey.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2">How does the Music Generator work?</button>
+                    <div class="faq-answer" id="faq-answer-2" hidden>
+                        <p>Simply type in a short description of the music you want to create, adjust the beat length using the slider, and click "Generate." MusiPal will create a music sample based on your input.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3">Who can use MusiPal?</button>
+                    <div class="faq-answer" id="faq-answer-3" hidden>
+                        <p>MusiPal is made for anyone, especially beginners and hobbyists who want to explore music creation easily and quickly without needing advanced tools or knowledge.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4">What kind of music can I create?</button>
+                    <div class="faq-answer" id="faq-answer-4" hidden>
+                        <p>You can create various styles of music by describing your desired mood, instruments, or genre. Since all our data is non-copyright, you can freely use your generated samples for inspiration or as foundational elements for your own compositions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 MusiPal. All rights reserved.</p>
+    </footer>
+
+    <button id="openChatbotButton" class="chatbot-toggle-button">
+        💬
+    </button>
+
+    <div id="chatbotContainer" class="chatbot-container" hidden>
+        <div class="chatbot-header">
+            <h3>MusiPal Assistant</h3>
+            <button id="closeChatbotButton" class="close-chatbot-button">&times;</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="bot-message">Hello! How can I help you with MusiPal today?</div>
+            </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbotInput" placeholder="Type your question..." autocomplete="off">
+            <button id="sendChatbotMessage">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Burger Menu Functionality (as in your original code, adapted for no burger element)
+            const burgerMenu = document.querySelector('.burger-menu');
+            const navLinks = document.querySelector('.nav-links');
+
+            if (burgerMenu && navLinks) {
+                burgerMenu.addEventListener('click', function() {
+                    const isExpanded = burgerMenu.getAttribute('aria-expanded') === 'true';
+                    burgerMenu.setAttribute('aria-expanded', !isExpanded);
+                    navLinks.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function(event) {
+                    if (!navLinks.contains(event.target) && !burgerMenu.contains(event.target) && navLinks.classList.contains('show')) {
+                        burgerMenu.setAttribute('aria-expanded', 'false');
+                        navLinks.classList.remove('show');
+                    }
+                });
+            } else {
+                 // console.warn("Burger menu elements not found in the DOM. Responsive navigation might not work as expected.");
+            }
+
+
+            // FAQ Accordion Functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+                    // Close all other open answers
+                    document.querySelectorAll('.faq-question[aria-expanded="true"]').forEach(openQuestion => {
+                        if (openQuestion !== this) {
+                            openQuestion.setAttribute('aria-expanded', 'false');
+                            document.getElementById(openQuestion.getAttribute('aria-controls')).setAttribute('hidden', '');
+                        }
+                    });
+
+                    // Toggle the clicked answer
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    if (isExpanded) {
+                        answer.setAttribute('hidden', '');
+                    } else {
+                        answer.removeAttribute('hidden');
+                    }
+                });
+            });
+
+            // Chatbot Functionality
+            const openChatbotButton = document.getElementById('openChatbotButton');
+            const closeChatbotButton = document.getElementById('closeChatbotButton');
+            const chatbotContainer = document.getElementById('chatbotContainer');
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const sendChatbotMessage = document.getElementById('sendChatbotMessage');
+
+            // --- Keyword-based responses ---
+            const chatbotResponses = {
+                "music not playing": "It's possible that the AI model may have 'hallucinated' or encountered an error. I suggest trying to generate the music again with your prompt.",
+                "music not generated": "If your music isn't generating, please check your internet connection and ensure your prompt is clear and descriptive. Sometimes, simply trying again helps!",
+                "error generating": "An error during generation can be due to various reasons. Please try regenerating the music. If the problem persists, ensure your browser is updated or try a different one.",
+                "how to use": "To use MusiPal, go to the 'Music Gen' page, type a description of the music you want, select the length, and click 'Generate Music'.",
+                "what can i create": "You can create various styles of music by describing your desired mood, instruments, or genre. All generated samples are royalty-free!",
+                "royalty free": "Yes, all music generated on MusiPal is royalty-free and can be used for your personal projects or as inspiration.",
+                "download music": "After music is generated, an audio player and a 'Download Music' link will appear below the generation button.",
+                "contact support": "For further assistance, please visit our 'About' page for more information or contact us directly.",
+                "hi": "Hello there! How can I help you?",
+                "hello": "Hi! What can I do for you today?",
+                "hey": "Hey! Ask me anything about MusiPal.",
+
+                // --- NEW RESPONSES BASED ON YOUR SYSTEM EXPLANATION ---
+                "musicgen model": "MusiPal uses Meta's MusicGen model to generate audio from text prompts. It's a powerful AI designed for creative music generation.",
+                "where is music stored": "Your generated music files are stored directly on the MusiPal website's server, in a dedicated folder. This allows you to access them later.",
+                "profile page": "The Profile page is where you can view all the music you've generated in the past. It serves as your personal music history.",
+                "database used": "MusiPal uses SQLite as its database. This database stores all the metadata associated with your generated music, like prompts, titles, artists, and cover image paths.",
+                "edit music": "On your Profile page, you can edit the metadata for your generated music, including the music title, artist name, and even upload a custom cover image. The actual audio file name cannot be changed.",
+                "change image": "Yes, you can change the cover image for your generated music from the 'Edit Music Details' modal on your Profile page. Just click the 'Edit' button next to a music item.",
+                "logout": "You can log out of your MusiPal account by clicking the 'Logout' link available on the navigation bar, typically found on the Profile page or overall header.",
+                "meta data": "Metadata for your music includes its title, artist, the prompt you used to generate it, and the date it was created. You can edit some of this information on your Profile page.",
+                "rename music": "Currently, you cannot rename the actual generated music files. However, you can change the 'Music Name' (title) and 'Artist' metadata associated with the file from your Profile page."
+            };
+
+            // --- Chatbot UI Toggling ---
+            openChatbotButton.addEventListener('click', () => {
+                chatbotContainer.removeAttribute('hidden');
+                openChatbotButton.setAttribute('hidden', ''); // Hide the toggle button when chat is open
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to bottom on open
+                chatbotInput.focus(); // Focus input field
+            });
+
+            closeChatbotButton.addEventListener('click', () => {
+                chatbotContainer.setAttribute('hidden', '');
+                openChatbotButton.removeAttribute('hidden'); // Show the toggle button when chat is closed
+            });
+
+            // --- Message Sending Logic ---
+            function sendMessage() {
+                const userMessage = chatbotInput.value.trim();
+                if (userMessage === "") return;
+
+                // Add user message to chat
+                const userBubble = document.createElement('div');
+                userBubble.classList.add('user-message');
+                userBubble.textContent = userMessage;
+                chatbotMessages.appendChild(userBubble);
+
+                chatbotInput.value = ""; // Clear input
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to bottom
+
+                // Process bot response
+                setTimeout(() => {
+                    const botResponse = getBotResponse(userMessage);
+                    const botBubble = document.createElement('div');
+                    botBubble.classList.add('bot-message');
+                    botBubble.textContent = botResponse;
+                    chatbotMessages.appendChild(botBubble);
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to bottom after bot reply
+                }, 500); // Simulate typing delay
+            }
+
+            // --- Levenshtein Distance Calculation ---
+            function getLevenshteinDistance(a, b) {
+                const matrix = [];
+
+                // increment along the first column of each row
+                for (let i = 0; i <= b.length; i++) {
+                    matrix[i] = [i];
+                }
+
+                // increment each column in the first row
+                for (let j = 0; j <= a.length; j++) {
+                    matrix[0][j] = j;
+                }
+
+                // Fill in the rest of the matrix
+                for (let i = 1; i <= b.length; i++) {
+                    for (let j = 1; j <= a.length; j++) {
+                        if (b.charAt(i - 1) == a.charAt(j - 1)) {
+                            matrix[i][j] = matrix[i - 1][j - 1];
+                        } else {
+                            matrix[i][j] = Math.min(
+                                matrix[i - 1][j - 1] + 1, // substitution
+                                Math.min(
+                                    matrix[i][j - 1] + 1, // insertion
+                                    matrix[i - 1][j] + 1 // deletion
+                                )
+                            );
+                        }
+                    }
+                }
+
+                return matrix[b.length][a.length];
+            }
+
+
+            // --- Get Bot Response based on Keywords with Typo Tolerance ---
+            function getBotResponse(message) {
+                const normalizedMessage = message.toLowerCase();
+                const keywords = Object.keys(chatbotResponses);
+                const MAX_EDIT_DISTANCE = 2; // Allow up to 2 character differences for a match
+
+                // 1. Try exact phrase match (case-insensitive)
+                for (const keyword of keywords) {
+                    if (normalizedMessage.includes(keyword)) {
+                        return chatbotResponses[keyword];
+                    }
+                }
+
+                // 2. Try word-by-word fuzzy matching
+                const messageWords = normalizedMessage.split(/\s+/); // Split by whitespace
+                let bestMatchKeyword = null;
+                let minDistance = Infinity;
+
+                for (const keyword of keywords) {
+                    const keywordWords = keyword.split(/\s+/);
+
+                    // For single-word keywords, check if any word in the message is a close match
+                    if (keywordWords.length === 1) {
+                        for (const msgWord of messageWords) {
+                            const dist = getLevenshteinDistance(msgWord, keyword);
+                            if (dist <= MAX_EDIT_DISTANCE && dist < minDistance) {
+                                minDistance = dist;
+                                bestMatchKeyword = keyword;
+                            }
+                        }
+                    } else {
+                        // For multi-word keywords, check if the full keyword (or a substring) is a close match
+                        // This simplified approach checks the whole keyword against the whole message
+                        // For more advanced, you'd check substrings of the message
+                        const dist = getLevenshteinDistance(normalizedMessage, keyword);
+                        if (dist <= MAX_EDIT_DISTANCE && dist < minDistance) {
+                             minDistance = dist;
+                             bestMatchKeyword = keyword;
+                        }
+                        // Also check if individual words from the keyword are present in the message
+                        for (const kwWord of keywordWords) {
+                            for (const msgWord of messageWords) {
+                                const wordDist = getLevenshteinDistance(msgWord, kwWord);
+                                if (wordDist <= 1 && wordDist < minDistance) { // Smaller tolerance for single words
+                                    minDistance = wordDist;
+                                    bestMatchKeyword = keyword; // Respond with the full phrase's answer
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (bestMatchKeyword !== null) {
+                    return chatbotResponses[bestMatchKeyword];
+                }
+
+
+                // If no specific match, provide a generic response
+                return "I'm sorry, I don't understand your question. Please try rephrasing it or ask about common topics like 'music not playing', 'how to use', or 'what can I create'.";
+            }
+
+            // --- Event Listeners for Chatbot Input ---
+            sendChatbotMessage.addEventListener('click', sendMessage);
+
+            chatbotInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
