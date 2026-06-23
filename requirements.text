@@ -1,0 +1,11 @@
+flask
+torch
+torchaudio
+transformers
+accelerate
+tqdm
+
+
+pip install -r requirements.txt
+|^|
+remove this when you will install
