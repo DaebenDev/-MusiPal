@@ -135,6 +135,7 @@ musipal/
 - The MusicGen model is **large** (~several GB) and must be downloaded separately. We cannot include it in the repository due to size limits.
 - This is a **student project** – it is not intended for production use without further security hardening (e.g., secure secret keys, HTTPS, rate limiting).
 - The chatbot uses a simple keyword‑matching system with Levenshtein distance for typo tolerance, not an LLM.
+- The `node_modules` folder (or any equivalent large dependency directory) is not included in this repository because it contains thousands of files and is not suitable for version control. If your setup requires frontend build tools, install the necessary packages via your package manager (e.g., `npm install`) – otherwise, this note does not apply to this Python‑based project.
 
 ---
 
